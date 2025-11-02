@@ -3,6 +3,7 @@ import { Sidebar } from '../components/Sidebar';
 import { TopBar } from '../components/TopBar';
 import { DataTable } from '../components/DataTable';
 import { PlusIcon } from 'lucide-react';
+import { FooterBar } from '../components/FooterBar';
 const sampleData = [{
   regNo: 'BH2025000003',
   name: 'විමලසේන',
@@ -93,6 +94,7 @@ export function BhikkuList() {
           </div>
           <DataTable columns={columns} data={sampleData} onEdit={handleEdit} onDelete={handleDelete} />
         </main>
+         <FooterBar />
       </div>
     </div>;
 }
