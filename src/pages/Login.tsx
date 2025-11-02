@@ -12,6 +12,7 @@ export function Login() {
       navigate('/dashboard');
     }
   };
+
   return <div className="w-full min-h-screen flex">
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-500 to-orange-600 p-12 items-center justify-center relative overflow-hidden">
@@ -26,14 +27,8 @@ export function Login() {
         </div>
         <div className="relative z-10 text-white max-w-md">
           <div className="flex items-center gap-3 mb-8">
-            <img src="/log.jpg" alt="Department Logo" className="w-16 h-16 bg-white rounded-lg p-2" />
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-orange-500 rounded-full relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-                </div>
-              </div>
-            </div>
+            <img src="/BD-Logo.png" alt="Department Logo" />
+           
           </div>
           <h1 className="text-4xl font-bold mb-6">
             Department of Buddhist Affairs - HRMS
