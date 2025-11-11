@@ -1,61 +1,84 @@
-import React from 'react';
-import { EyeIcon, EditIcon, PlusIcon, FileTextIcon, SearchIcon } from 'lucide-react';
-interface PetalMenuProps {
-  isVisible: boolean;
-  onAction: (action: string) => void;
+// src/components/PetalMenu.tsx
+"use client";
+
+import * as React from "react";
+
+export type PetalItem = {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  label: string;
+  action: string;
+  route?: string;
+};
+
+function polar(deg: number, r: number) {
+  const a = (deg * Math.PI) / 180;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r };
 }
+
 export function PetalMenu({
   isVisible,
-  onAction
-}: PetalMenuProps) {
-  const menuItems = [{
-    icon: EyeIcon,
-    label: 'View',
-    action: 'view',
-    angle: 0
-  }, {
-    icon: EditIcon,
-    label: 'Update',
-    action: 'update',
-    angle: 72
-  }, {
-    icon: PlusIcon,
-    label: 'Add',
-    action: 'add',
-    angle: 144
-  }, {
-    icon: FileTextIcon,
-    label: 'Reports',
-    action: 'reports',
-    angle: 216
-  }, {
-    icon: SearchIcon,
-    label: 'Search',
-    action: 'search',
-    angle: 288
-  }];
-  if (!isVisible) return null;
-  return <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-      {menuItems.map((item, index) => {
-      const Icon = item.icon;
-      const radius = 80;
-      const angleRad = item.angle * Math.PI / 180;
-      const x = Math.cos(angleRad) * radius;
-      const y = Math.sin(angleRad) * radius;
-      return <button key={item.action} onClick={e => {
-        e.stopPropagation();
-        onAction(item.action);
-      }} className="absolute pointer-events-auto bg-white rounded-xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 animate-petal-open" style={{
-        transform: `translate(${x}px, ${y}px)`,
-        animationDelay: `${index * 50}ms`
-      }}>
-            <div className="flex flex-col items-center gap-1">
-              <Icon className="w-5 h-5 text-orange-600" />
-              <span className="text-xs font-medium text-gray-700">
-                {item.label}
+  items = [],
+  onAction,
+  radius = 96,
+  itemSize = 52,
+  stagger = 35,
+}: {
+  isVisible: boolean;
+  items?: PetalItem[];
+  onAction: (action: string, route?: string) => void;
+  radius?: number;
+  itemSize?: number;
+  stagger?: number;
+}) {
+  // Overlay is centered over the parent (which must be position:relative)
+  const overlay = radius * 2 + itemSize;
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-30">
+      <div
+        className="absolute"
+        style={{
+          left: "50%",
+          top: "50%",
+          width: overlay,
+          height: overlay,
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        {items.map((it, i) => {
+          const step = 360 / Math.max(items.length, 1);
+          const start = -90; // start at top
+          const { x, y } = polar(start + i * step, radius);
+
+          return (
+            <button
+              key={`${it.action}-${i}`}
+              type="button"
+              onClick={() => onAction(it.action, it.route)}
+              title={it.label}
+              className="pointer-events-auto absolute grid place-items-center rounded-xl bg-white shadow-md border border-black/5 hover:shadow-lg transition-all duration-200"
+              style={{
+                width: itemSize,
+                height: itemSize,
+                left: overlay / 2 - itemSize / 2,
+                top: overlay / 2 - itemSize / 2,
+                transform: isVisible
+                  ? `translate(${x}px, ${y}px) scale(1)`
+                  : `translate(0px, 0px) scale(0.9)`,
+                opacity: isVisible ? 1 : 0,
+                transitionDelay: isVisible ? `${i * stagger}ms` : "0ms",
+              }}
+            >
+              <it.icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium text-gray-700 leading-none">
+                {it.label}
               </span>
-            </div>
-          </button>;
-    })}
-    </div>;
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
+
+export default PetalMenu;
